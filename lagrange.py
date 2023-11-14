@@ -19,38 +19,37 @@ def lagrange(x, y, xp):
     return r   
 
 
-def print_lagrange(x, y):
+def txt_lagrange(x, y, variable, xformat=".2f", yformat="7.5f", one_row=False):
     """
-    Computes value of the Lagrange polynomial at position xp.
+    Returns the text representation of the Lagrange polynomial.
         x: x coordinates
         y: y coordinates
-        xp: sampling point in x
     """
     num = len(x)
-    r = ""
+    txt = ""
 
+    rows = []
     for i in range(num):
         w1 = ""
         w2 = 1.
         for j in range(num):
             if i != j:
-                w1 = w1 + f"(x-{x[j]:.3f})"
+                w1 = w1 + f"({variable}-{x[j]:{xformat}})"
                 w2 = w2 *(x[i]-x[j])
-        r = r + f"{y[i]:.3f}*{w1}/{w2:.3f}+\n"
-    return r   
-
-
-def coeff(x, y):
-    """
-    Determines a b c coefficients for 
-    quadratic Lagrange polynomial: 
-    f(x) = ax^2 + bx + c
-    """
-    A = y[0]/((x[0]-x[1])*(x[0]-x[2]))
-    B = y[1]/((x[1]-x[0])*(x[1]-x[2]))
-    C = y[2]/((x[2]-x[0])*(x[2]-x[1]))  
-    a = A + B + C
-    b = -(A*(x[1]+x[2]) + B*(x[0]+x[2]) + C*(x[0]+x[1]))
-    c = (A*x[1]*x[2]) + (B*x[0]*x[2]) + (C*(x[0]*x[1]))
-    return a,b,c
-
+        c = y[i]/w2
+        rows.append(f"{c:{yformat}} {w1}")
+        
+    line_break = "\n"
+    if one_row:
+        line_break = ""
+    
+    for i, r in enumerate(rows):
+        if i > 0:
+            if r[0] == "-":
+                txt = txt + " - " + line_break + r[1:]
+            else:
+                txt = txt + " + " + line_break + r 
+        else:
+            txt = r
+   
+    return txt   
